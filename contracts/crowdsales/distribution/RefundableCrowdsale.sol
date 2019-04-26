@@ -4,7 +4,7 @@ import "./FinalizableCrowdsale.sol";
 
 contract RefundableCrowdsale is FinalizableCrowdsale
 {
-    constructor(uint _goal) public
+    constructor(uint _goal, uint _openingTime, uint _closingTime, address _baseToken, address _wallet, address[] memory _availableTokens, uint[] memory _tokenPrices) FinalizableCrowdsale(_openingTime, _closingTime, _baseToken, _wallet, _availableTokens, _tokenPrices) public 
     {
         require(_goal > 0);
         goal = _goal;

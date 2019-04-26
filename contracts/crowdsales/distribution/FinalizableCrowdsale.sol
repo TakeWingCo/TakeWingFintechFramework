@@ -7,7 +7,7 @@ contract FinalizableCrowdsale is TimedCrowdsale
 {
     event CrowdsaleFinalized();
 
-    constructor() public
+    constructor(uint _openingTime, uint _closingTime, address _baseToken, address _wallet, address[] memory _availableTokens, uint[] memory _tokenPrices) TimedCrowdsale(_openingTime, _closingTime, _baseToken, _wallet, _availableTokens, _tokenPrices) public 
     {
         finalized = false;
     }

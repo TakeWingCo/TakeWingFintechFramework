@@ -6,7 +6,7 @@ contract TimedCrowdsale is Crowdsale
 {
     event TimedCrowdsaleExtended(uint prevClosingTime, uint newClosingTime);
 
-    constructor(uint _openingTime, uint _closingTime) public
+    constructor(uint _openingTime, uint _closingTime, address _baseToken, address _wallet, address[] memory _availableTokens, uint[] memory _tokenPrices) Crowdsale(_baseToken, _wallet, _availableTokens, _tokenPrices) public
     {
         require(
             openingTime >= block.timestamp,

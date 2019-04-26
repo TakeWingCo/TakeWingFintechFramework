@@ -7,10 +7,10 @@ TARGETS='
 ./contracts/crowdsales/Crowdsale.sol
 ./contracts/crowdsales/distribution/FinalizableCrowdsale.sol
 ./contracts/crowdsales/distribution/RefundableCrowdsale.sol
-./contracts/crowdsales/emission/MintedCrowdsale.sol
 ./contracts/crowdsales/validation/CappedCrowdsale.sol
 ./contracts/crowdsales/validation/TimedCrowdsale.sol
 ./contracts/crowdsales/validation/WhitelistCrowdsale.sol
+./contracts/crowdsales/emission/MintedCrowdsale.sol
 '
 
 for SOLIDITY_FILE in $TARGETS
