@@ -2,9 +2,9 @@ pragma solidity ^0.5.2;
 
 import "../Crowdsale.sol";
 
-contract MintedCrowdsale is Crowdsale
+contract CappedCrowdsale is Crowdsale
 {
-    constructor(uint _cap) public
+    constructor(uint _cap, address _baseToken, address _wallet, address[] memory _availableTokens, uint[] memory _tokenPrices) Crowdsale(_baseToken, _wallet, _availableTokens, _tokenPrices) public 
     {
         require(
             cap > 0,

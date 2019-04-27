@@ -9,7 +9,7 @@ TARGETS='
 ./contracts/crowdsales/distribution/RefundableCrowdsale.sol
 ./contracts/crowdsales/validation/CappedCrowdsale.sol
 ./contracts/crowdsales/validation/TimedCrowdsale.sol
-./contracts/crowdsales/validation/WhitelistCrowdsale.sol
+./contracts/crowdsales/validation/WhitelistedCrowdsale.sol
 ./contracts/crowdsales/emission/MintedCrowdsale.sol
 '
 
