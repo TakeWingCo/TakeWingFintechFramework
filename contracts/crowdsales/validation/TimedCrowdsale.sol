@@ -9,12 +9,12 @@ contract TimedCrowdsale is Crowdsale
     constructor(uint _openingTime, uint _closingTime, address _baseToken, address _wallet, address[] memory _availableTokens, uint[] memory _tokenPrices) Crowdsale(_baseToken, _wallet, _availableTokens, _tokenPrices) public
     {
         require(
-            openingTime >= block.timestamp,
+            _openingTime >= block.timestamp,
             "Opening time should be more or equal than current time"
         );
 
         require(
-            closingTime > openingTime,
+            _closingTime > _openingTime,
             "Closing time should be more than opening time"
         );
 

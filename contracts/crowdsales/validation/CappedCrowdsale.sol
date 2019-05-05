@@ -7,7 +7,7 @@ contract CappedCrowdsale is Crowdsale
     constructor(uint _cap, address _baseToken, address _wallet, address[] memory _availableTokens, uint[] memory _tokenPrices) Crowdsale(_baseToken, _wallet, _availableTokens, _tokenPrices) public 
     {
         require(
-            cap > 0,
+            _cap > 0,
             "Cap should be more than 0"
         );
 
