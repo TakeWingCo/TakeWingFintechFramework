@@ -2,25 +2,45 @@ import json
 import web3
 import os
 import time
-
+from web3 import HTTPProvider
 from web3 import Web3
 from web3.contract import ConciseContract
 
-class W3:
+def url(address,port):
+    return "http://{}:{}".format(address,port)
 
+class W3:
     w3 = None
 
-    def __init__(self, provider, accounts_amount, each_account_eth):
-        self.w3 = Web3(provider)
+    def __init__(self):
+        
+        config = open('config.json','r')
+        data = json.loads(config.read())
+        config.close()                
 
-        for i in range(1, accounts_amount):
-            self.w3.personal.newAccount('password')
-            self.w3.personal.unlockAccount(self.w3.eth.accounts[i], 'password')
-            self.w3.eth.sendTransaction({'to': self.w3.eth.accounts[i], 'from': self.w3.eth.accounts[0], 'value': each_account_eth})
+        self.w3 = Web3(HTTPProvider(url(data['address'],data['port'])))
+
+        for i in range(1, int(data['accounts_count']+1)):     
+            if len(self.w3.eth.accounts) < data["accounts_count"] + 1:               
+                self.w3.personal.newAccount('password')
+
+        self.w3.personal.unlockAccount(self.w3.eth.accounts[0], '')
+
+        for i in range(1, int(data['accounts_count'])+1):
+            self.w3.personal.unlockAccount(self.w3.eth.accounts[i], 'password')         
+                       
+        for account in self.w3.eth.accounts:
+            if account == self.w3.eth.accounts[0]:
+                continue
+            
+            if self.w3.eth.getBalance(account) >= int(data['account_balance']):
+                self.w3.eth.sendTransaction({'to': self.w3.eth.accounts[0], 'from': account, 'value': self.w3.eth.getBalance(account) - int(data['account_balance'])})
+        
+            if self.w3.eth.getBalance(account) < int(data['account_balance']):
+                self.w3.eth.sendTransaction({'to': account, 'from': self.w3.eth.accounts[0], 'value': int(data['account_balance'] - self.w3.eth.getBalance(account))})
 
     def instance(self):
         return self.w3
-
 
 class Contract:
     abi = None
@@ -28,9 +48,7 @@ class Contract:
 
     address = None
     instance = None
-
     w3 = None
-
 
     def __init__(self, contract_name, w3, deploy_info):
         self.set_w3(w3)
@@ -58,7 +76,6 @@ class Contract:
 
         self.address = tx_receipt['contractAddress']
         self.instance = ConciseContract(self.w3.eth.contract(self.abi, self.address))
-
 
     def set_w3(self, w3):
         self.w3 = w3

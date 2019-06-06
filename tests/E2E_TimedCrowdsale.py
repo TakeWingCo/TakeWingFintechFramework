@@ -3,7 +3,7 @@ from contract import Contract, W3
 import unittest
 import time
 
-w3 = W3(HTTPProvider('http://localhost:8545'), 6, 100000000000).instance()
+w3 = W3().instance()
 
 class MyTest(unittest.TestCase):
     def test_timed(self):
