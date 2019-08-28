@@ -1,8 +1,9 @@
-from web3 import HTTPProvider
-from contract import Contract, W3
 import unittest
+import time
 
-w3 = W3().instance()
+from web3 import Web3
+from ethtools import EthTools
+from ethtools import EthServer
 
 class MyTest(unittest.TestCase):
     def test_invest(self):
@@ -10,27 +11,36 @@ class MyTest(unittest.TestCase):
         price_per_token = 1000
         token_value = 5
 
+        eth = EthTools("http://localhost:5000")
+        eth.init_fixtures("/var/lib/takewing/tests/fixtures.json")
+
         #Tokens
-        base_token = Contract("ERC20Mintable", w3, {"owner": w3.eth.accounts[0], "args": []})
-        tether = Contract("ERC20Mintable", w3, {"owner": w3.eth.accounts[0], "args": []})
-        tusd = Contract("ERC20Mintable", w3, {"owner": w3.eth.accounts[0], "args": []})
-     
-        base_token.instance.mint(w3.eth.accounts[0], 100, transact={'from': w3.eth.accounts[0]})
-        tether.instance.mint(w3.eth.accounts[1], 100000, transact={'from': w3.eth.accounts[0]})
-        tusd.instance.mint(w3.eth.accounts[1], 100000, transact={'from': w3.eth.accounts[0]})
+        base_token = eth.filter(name="BaseToken").contract
+        tether = eth.filter(name="Tether").contract
+
+        #Accounts
+        deployer = eth.filter(role="Deployer").accounts[0].address
+        tester = eth.filter(role="Tester").accounts[0].address
+        eth.filter(role="Tester").unlock()
+
+        base_token.instance.mint(deployer, 100, transact={'from': deployer})
+        tether.instance.mint(tester, 100000, transact={'from': deployer})
        
         #Crowdsale
-        crowdsale = Contract("MintedCrowdsale", w3, {"owner": w3.eth.accounts[0], "args":[base_token.address, w3.eth.accounts[0], [tether.address,tusd.address], [price_per_token,price_per_token]]})
-        base_token.instance.addMinter(crowdsale.address, transact={'from': w3.eth.accounts[0]})  
+        crowdsale = eth.filter(name="MintedCrowdsale").contract
+        base_token.instance.addMinter(crowdsale.address, transact={'from': deployer})
 
-        self.assertEqual(base_token.instance.balanceOf(w3.eth.accounts[1]), 0)
-        self.assertEqual(tether.instance.balanceOf(w3.eth.accounts[0]), 0)
+        self.assertEqual(base_token.instance.balanceOf(tester), 0)
+        self.assertEqual(tether.instance.balanceOf(deployer), 0)
 
-        tether.instance.approve(crowdsale.address,price_per_token*token_value, transact={'from': w3.eth.accounts[1]})
-        crowdsale.instance.invest(price_per_token*token_value,tether.address, transact={'from': w3.eth.accounts[1]})
+        tether.instance.approve(crowdsale.address,price_per_token*token_value, transact={'from': tester})
+        crowdsale.instance.invest(price_per_token*token_value,tether.address, transact={'from': tester})
       
-        self.assertEqual(base_token.instance.balanceOf(w3.eth.accounts[1]), token_value)
-        self.assertEqual(tether.instance.balanceOf(w3.eth.accounts[0]), token_value*price_per_token)
+        self.assertEqual(base_token.instance.balanceOf(tester), token_value)
+        self.assertEqual(tether.instance.balanceOf(deployer), token_value*price_per_token)
+
+EthServer('/var/lib/takewing/tests/config.json')
+time.sleep(3)
         
 if __name__ == '__main__':
     unittest.main()
