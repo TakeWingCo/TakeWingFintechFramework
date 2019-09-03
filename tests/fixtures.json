@@ -1,0 +1,100 @@
+{
+  "workdir": "/var/lib/takewing/bin",
+  "accounts": [
+    {
+      "role": "Deployer",
+      "count": 1
+    },
+    {
+      "role": "Tester",
+      "count": 5
+    }
+  ],
+  "contracts": [
+    {
+      "name": "BaseToken",
+      "sender": "{{Account:Deployer}}",
+      "abiPath": "ERC20Mintable.abi",
+      "binPath": "ERC20Mintable.bin",
+      "args": []
+    },
+    {
+        "name": "Tether",
+        "sender": "{{Account:Deployer}}",
+        "abiPath": "ERC20Mintable.abi",
+        "binPath": "ERC20Mintable.bin",
+        "args": []
+    },
+    {
+        "name": "TUSD",
+        "sender": "{{Account:Deployer}}",
+        "abiPath": "ERC20Mintable.abi",
+        "binPath": "ERC20Mintable.bin",
+        "args": []
+    },
+    {
+        "name": "Crowdsale",
+        "sender": "{{Account:Deployer}}",
+        "abiPath": "Crowdsale.abi",
+        "binPath": "Crowdsale.bin",
+        "args": ["{{Contract:BaseToken}}","{{Account:Deployer}}", ["{{Contract:Tether}}", "{{Contract:TUSD}}"], [1000,1000]]
+    },
+    {
+        "name": "MintedCrowdsale",
+        "sender": "{{Account:Deployer}}",
+        "abiPath": "MintedCrowdsale.abi",
+        "binPath": "MintedCrowdsale.bin",
+        "args": ["{{Contract:BaseToken}}","{{Account:Deployer}}", ["{{Contract:Tether}}", "{{Contract:TUSD}}"], [1000,1000]]
+    },
+    {
+        "name": "CappedCrowdsale",
+        "sender": "{{Account:Deployer}}",
+        "abiPath": "CappedCrowdsale.abi",
+        "binPath": "CappedCrowdsale.bin",
+        "args": [10,"{{Contract:BaseToken}}", "{{Account:Deployer}}", ["{{Contract:Tether}}", "{{Contract:TUSD}}"], [1000,1000]]
+    },
+    {
+        "name": "PausableCrowdsale",
+        "sender": "{{Account:Deployer}}",
+        "abiPath": "PausableCrowdsale.abi",
+        "binPath": "PausableCrowdsale.bin",
+        "args": ["{{Contract:BaseToken}}", "{{Account:Deployer}}", ["{{Contract:Tether}}", "{{Contract:TUSD}}"], [1000,1000]]
+    },
+    {
+        "name": "WhitelistedCrowdsale",
+        "sender": "{{Account:Deployer}}",
+        "abiPath": "WhitelistedCrowdsale.abi",
+        "binPath": "WhitelistedCrowdsale.bin",
+        "args": ["{{Contract:BaseToken}}", "{{Account:Deployer}}", ["{{Contract:Tether}}", "{{Contract:TUSD}}"], [1000,1000]]
+    }
+  ],
+  "postDeployActions": [
+    {
+        "contract": "BaseToken",
+        "method": "mint",
+        "constant": false,
+        "sender": "{{Account:Deployer}}",
+        "args": ["{{Account:Deployer}}", 
+        100
+        ]
+    },
+    {
+        "contract": "Tether",
+        "method": "mint",
+        "constant": false,
+        "sender": "{{Account:Deployer}}",
+        "args": ["{{Account:Tester}}", 
+        100000
+        ]
+    },
+    {
+        "contract": "TUSD",
+        "method": "mint",
+        "constant": false,
+        "sender": "{{Account:Deployer}}",
+        "args": ["{{Account:Tester}}", 
+        100000
+        ]
+    }
+  ]
+}

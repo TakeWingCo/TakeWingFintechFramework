@@ -1,6 +1,7 @@
 {
-  "accounts_count": 6,
-  "account_balance": 100000000000,
-  "address": "localhost",
-  "port": "8008"
+    "balance": 1000000000000000000,
+    "node_address": "127.0.0.1",
+    "node_port": "8545",
+    "server_port": "5000",
+    "password": "password"  
 }
